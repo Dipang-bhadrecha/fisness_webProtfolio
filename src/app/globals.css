@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "@fontsource-variable/plus-jakarta-sans/wght.css";
+@import "@fontsource-variable/instrument-sans/wght.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+
+:root {
+  --font-display: "Plus Jakarta Sans Variable", sans-serif;
+  --font-instrument-sans: "Instrument Sans Variable", sans-serif;
+  --font-ibm-plex-mono: "IBM Plex Mono", monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #ffffff;
+  color: #17211f;
+}
+
+::selection {
+  background: rgba(15, 125, 132, 0.16);
+}
+
+.text-gradient-flow {
+  background: linear-gradient(
+    100deg,
+    #0f7d84,
+    #12a3ad 20%,
+    #2f6fb0 40%,
+    #d62976 60%,
+    #fa7e1e 80%,
+    #0f7d84
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.text-gradient-teal {
+  background: linear-gradient(100deg, #0f7d84, #12a3ad 55%, #2f6fb0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

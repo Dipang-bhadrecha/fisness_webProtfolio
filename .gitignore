@@ -1,0 +1,11 @@
+.next/
+node_modules/
+.env*.local
+npm-debug.log*
+.DS_Store
+next-env.d.ts
+*.tsbuildinfo
+
+# Claude Code — local-only, not part of the deployed site
+.claude/
+CLAUDE.md
