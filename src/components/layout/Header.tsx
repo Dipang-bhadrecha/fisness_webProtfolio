@@ -28,7 +28,7 @@ export function Header() {
             </Link>
           ))}
           <a
-            href="https://instagram.com/"
+            href="https://www.instagram.com/fisness__?igsh=MXZsZ3RmY2pmZnRtYw=="
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
