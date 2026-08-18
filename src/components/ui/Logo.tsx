@@ -26,9 +26,9 @@ export function Logo({ className, iconSize = 22 }: LogoProps) {
         <img
           src={logoSrc}
           alt="Fisness"
-          width={66}
-          height={44}
-          className="h-11 w-auto object-contain flex-shrink-0"
+          width={104}
+          height={70}
+          className="h-[70px] w-auto object-contain flex-shrink-0"
           onError={() => setCandidateIndex((i) => i + 1)}
         />
       ) : (

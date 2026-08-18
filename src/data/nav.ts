@@ -2,7 +2,6 @@ import type { NavLink } from "@/types";
 
 export const navLinks: NavLink[] = [
   { label: "Features", href: "/#features" },
-  { label: "Tech", href: "/#tech" },
 ];
 
 export const heroRotatingWords = [
@@ -16,7 +15,6 @@ export const heroRotatingWords = [
 export const footerLinks = {
   product: [
     { label: "Features", href: "/#features" },
-    { label: "Tech stack", href: "/#tech" },
     { label: "Download", href: "#" },
   ],
   company: [

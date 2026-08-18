@@ -18,10 +18,3 @@ export type Feature = FeatureTint & {
   /** Screen-recording for this feature (e.g. "/videos/login_flow.mp4"). Falls back to a tinted icon placeholder until it loads. */
   mediaSrc?: string;
 };
-
-export type TechGroup = {
-  icon: LucideIcon;
-  label: string;
-  why: string;
-  items: string[];
-};
