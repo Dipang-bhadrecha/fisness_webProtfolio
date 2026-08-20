@@ -20,7 +20,7 @@ export function Logo({ className, iconSize = 22 }: LogoProps) {
   return (
     <Link
       href="/"
-      className={cn("flex items-center gap-3 text-ink no-underline", className)}
+      className={cn("flex items-center gap-1 text-ink no-underline", className)}
     >
       {logoSrc ? (
         <img
@@ -36,7 +36,7 @@ export function Logo({ className, iconSize = 22 }: LogoProps) {
           <Fish size={iconSize} strokeWidth={2.1} className="text-white" />
         </span>
       )}
-      <span className="font-display font-bold text-[21px] tracking-[-0.02em]">
+      <span className="font-display font-semibold text-[28px] tracking-[-0.02em]">
         Fisness
       </span>
     </Link>

@@ -22,7 +22,7 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-ink text-base font-semibold no-underline hover:text-teal transition-colors"
+              className="text-ink text-lg font-semibold no-underline hover:text-teal transition-colors"
             >
               {link.label}
             </Link>
@@ -61,7 +61,7 @@ export function Header() {
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className="text-ink font-semibold no-underline py-3 px-1 text-base hover:text-teal transition-colors"
+              className="text-ink font-semibold no-underline py-3 px-1 text-lg hover:text-teal transition-colors"
             >
               {link.label}
             </Link>
