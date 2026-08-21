@@ -20,7 +20,7 @@ export function Logo({ className, iconSize = 22 }: LogoProps) {
   return (
     <Link
       href="/"
-      className={cn("flex items-center gap-1 text-ink no-underline", className)}
+      className={cn("flex items-center gap-2 text-ink no-underline", className)}
     >
       {logoSrc ? (
         <img
@@ -28,7 +28,7 @@ export function Logo({ className, iconSize = 22 }: LogoProps) {
           alt="Fisness"
           width={104}
           height={70}
-          className="h-[70px] w-auto object-contain flex-shrink-0"
+          className="h-[48px] w-auto object-contain flex-shrink-0"
           onError={() => setCandidateIndex((i) => i + 1)}
         />
       ) : (
@@ -36,7 +36,7 @@ export function Logo({ className, iconSize = 22 }: LogoProps) {
           <Fish size={iconSize} strokeWidth={2.1} className="text-white" />
         </span>
       )}
-      <span className="font-display font-semibold text-[28px] tracking-[-0.02em]">
+      <span className="font-display font-semibold text-[24px] tracking-[-0.02em]">
         Fisness
       </span>
     </Link>
