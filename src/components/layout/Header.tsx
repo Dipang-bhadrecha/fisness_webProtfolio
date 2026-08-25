@@ -37,7 +37,9 @@ export function Header() {
             <InstagramIcon size={26} />
           </a>
           <Link
-            href="#"
+            href="https://play.google.com/store/apps/details?id=com.fisness.app"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-ink text-cream no-underline font-semibold text-base px-5 py-3 rounded-full hover:bg-teal transition-colors"
           >
             <Download size={18} strokeWidth={2.2} />
@@ -67,7 +69,9 @@ export function Header() {
             </Link>
           ))}
           <Link
-            href="#"
+            href="https://play.google.com/store/apps/details?id=com.fisness.app"
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => setMobileOpen(false)}
             className="mt-2 text-center bg-ink text-cream no-underline font-semibold py-3.5 rounded-xl"
           >

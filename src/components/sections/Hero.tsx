@@ -23,7 +23,12 @@ export function Hero() {
           <span className="block mt-4 md:mt-5 text-[0.72em] font-medium tracking-normal [word-spacing:0.14em]">All in your phone.</span>
         </h1>
         <div className="flex flex-wrap gap-3 justify-center mb-4">
-          <Button href="#" icon={Download}>
+          <Button
+            href="https://play.google.com/store/apps/details?id=com.fisness.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            icon={Download}
+          >
             Download the app
           </Button>
         </div>

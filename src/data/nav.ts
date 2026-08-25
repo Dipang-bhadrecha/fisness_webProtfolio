@@ -15,7 +15,10 @@ export const heroRotatingWords = [
 export const footerLinks = {
   product: [
     { label: "Features", href: "/#features" },
-    { label: "Download", href: "#" },
+    {
+      label: "Download",
+      href: "https://play.google.com/store/apps/details?id=com.fisness.app",
+    },
   ],
   company: [
     { label: "About", href: "#" },

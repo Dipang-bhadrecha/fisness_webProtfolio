@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
-
 import "./globals.css";
 
+// A generic fallback — the routes that actually render (the (marketing)
+// group, admin/) each set their own title via their own layout's metadata,
+// which Next.js merges over this. This only surfaces if something renders
+// with neither (e.g. a genuinely route-less error boundary).
 export const metadata: Metadata = {
-  title: "Fisness — Fish + business, all in your phone",
-  description:
-    "Fisness digitises every boat, trip and tali bill — from crew advances to season profit. Offline-first, end-to-end encrypted.",
+  title: "Fisness",
 };
 
 export default function RootLayout({
@@ -19,9 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-body bg-cream text-ink min-h-screen">
-        <Header />
         {children}
-        <Footer />
       </body>
     </html>
   );

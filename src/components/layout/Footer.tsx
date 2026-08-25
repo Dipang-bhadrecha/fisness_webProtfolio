@@ -27,6 +27,12 @@ export function Footer() {
               <Link
                 key={link.label}
                 href={link.href}
+                target={link.href.startsWith("http") ? "_blank" : undefined}
+                rel={
+                  link.href.startsWith("http")
+                    ? "noopener noreferrer"
+                    : undefined
+                }
                 className="text-muted text-[14.5px] no-underline hover:text-ink transition-colors"
               >
                 {link.label}

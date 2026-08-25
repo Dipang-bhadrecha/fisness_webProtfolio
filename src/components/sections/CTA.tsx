@@ -13,7 +13,14 @@ export function CTA() {
             Bring your whole fleet on board.
           </h2>
           <div className="flex flex-wrap gap-3 justify-center">
-            <Button href="#" icon={Download} variant="light" shape="pill">
+            <Button
+              href="https://play.google.com/store/apps/details?id=com.fisness.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              icon={Download}
+              variant="light"
+              shape="pill"
+            >
               Download the app
             </Button>
           </div>
