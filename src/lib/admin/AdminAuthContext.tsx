@@ -5,29 +5,31 @@
  *
  * Session state for the admin dashboard: a JWT in localStorage (not cookies
  * / NextAuth — the backend is a plain Bearer-JWT REST API with no session
- * infrastructure at all, and this is a 1-2-person internal tool behind a
- * phone+OTP gate that already exists server-side, so adding one just for
- * this client would be disproportionate). 7-day expiry, same as the mobile
- * app's own token lifetime, bounds how long a stolen token stays useful.
+ * infrastructure at all, and this is a 1-2-person internal tool, so adding
+ * one just for this client would be disproportionate). 12h expiry (server-
+ * side, see ADMIN_JWT_EXPIRES_IN), bounds how long a stolen token stays
+ * useful.
  *
- * `verify-otp`'s response doesn't carry `isAdmin` (it's a hand-picked shape,
- * not a spread of the user row), so login is genuinely two calls: verify the
- * OTP to get a token, then call `getMe` to find out whether this account is
- * actually an admin. A token is only ever persisted once that check passes.
+ * This token comes from a completely separate login than the mobile app's
+ * phone+OTP: username + password + TOTP (see api.ts's adminLogin /
+ * adminSetupStart / adminSetupConfirm / adminTotpVerify). There is no
+ * "valid login, wrong role" case anymore, unlike the old phone-OTP-derived
+ * flow — every successful login through that pipeline already IS an admin,
+ * so `status` has no `forbidden` state.
  */
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { AdminUser, getMe, verifyOtp } from "./api";
+import { AdminSession, adminMe } from "./api";
 
 const TOKEN_KEY = "fisness_admin_token";
 
-type Status = "loading" | "authed" | "unauthed" | "forbidden";
+type Status = "loading" | "authed" | "unauthed";
 
 interface AdminAuthState {
   status: Status;
   token: string | null;
-  user: AdminUser | null;
-  login: (phone: string, code: string) => Promise<void>;
+  user: AdminSession | null;
+  loginWithToken: (token: string, user: AdminSession) => void;
   logout: () => void;
 }
 
@@ -36,7 +38,7 @@ const AdminAuthContext = createContext<AdminAuthState | null>(null);
 export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<Status>("loading");
   const [token, setToken] = useState<string | null>(null);
-  const [user, setUser] = useState<AdminUser | null>(null);
+  const [user, setUser] = useState<AdminSession | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem(TOKEN_KEY);
@@ -44,16 +46,11 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
       setStatus("unauthed");
       return;
     }
-    getMe(stored)
+    adminMe(stored)
       .then((me) => {
-        if (me.isAdmin) {
-          setToken(stored);
-          setUser(me);
-          setStatus("authed");
-        } else {
-          localStorage.removeItem(TOKEN_KEY);
-          setStatus("forbidden");
-        }
+        setToken(stored);
+        setUser(me);
+        setStatus("authed");
       })
       .catch(() => {
         localStorage.removeItem(TOKEN_KEY);
@@ -61,16 +58,13 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
       });
   }, []);
 
-  const login = useCallback(async (phone: string, code: string) => {
-    const { token: newToken } = await verifyOtp(phone, code);
-    const me = await getMe(newToken);
-    if (!me.isAdmin) {
-      setStatus("forbidden");
-      throw new Error("This account does not have admin access.");
-    }
+  // The login form does the multi-step dance itself (password, then TOTP)
+  // and only hands this context a token once the backend has already
+  // returned a real `scope: 'admin-session'` session — this just persists it.
+  const loginWithToken = useCallback((newToken: string, newUser: AdminSession) => {
     localStorage.setItem(TOKEN_KEY, newToken);
     setToken(newToken);
-    setUser(me);
+    setUser(newUser);
     setStatus("authed");
   }, []);
 
@@ -82,7 +76,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AdminAuthContext.Provider value={{ status, token, user, login, logout }}>
+    <AdminAuthContext.Provider value={{ status, token, user, loginWithToken, logout }}>
       {children}
     </AdminAuthContext.Provider>
   );

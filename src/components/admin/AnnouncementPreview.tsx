@@ -13,8 +13,12 @@ export function AnnouncementPreview({ bodyHtml, videoUrl }: { bodyHtml: string; 
 
   return (
     <div>
-      <p className="text-xs font-semibold text-muted mb-1.5">Live preview</p>
-      <div className="rounded-2xl border border-muted-faint/30 bg-[#e9e5dc] p-5">
+      <p className="text-xs font-semibold text-muted dark:text-slate-400 mb-1.5">Live preview</p>
+      {/* Desk backdrop is deliberately NOT themed — same rule the app itself
+          follows for a bill/khata's paper: it's a simulation of what the
+          phone actually shows, which is always light, regardless of the
+          admin dashboard's own theme. */}
+      <div className="rounded-2xl border border-muted-faint/30 dark:border-slate-700 bg-[#e9e5dc] p-5">
         <div
           className="mx-auto w-full max-w-[380px] overflow-hidden rounded-[26px] shadow-lg"
           style={{ aspectRatio: "9 / 16" }}

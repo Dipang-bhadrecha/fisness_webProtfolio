@@ -7,9 +7,9 @@ import { cn } from "@/lib/utils";
 import { Announcement, deleteAnnouncement } from "@/lib/admin/api";
 
 const TYPE_BADGE: Record<string, string> = {
-  WELCOME: "bg-teal/10 text-teal",
-  UPDATE: "bg-amber-100 text-amber-700",
-  NEWS: "bg-emerald-100 text-emerald-700",
+  WELCOME: "bg-teal/10 dark:bg-teal/20 text-teal dark:text-teal-light",
+  UPDATE: "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400",
+  NEWS: "bg-emerald-100 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",
 };
 
 export function AnnouncementTable({
@@ -39,16 +39,16 @@ export function AnnouncementTable({
   };
 
   if (items.length === 0) {
-    return <p className="text-muted text-sm">No announcements yet.</p>;
+    return <p className="text-muted dark:text-slate-400 text-sm">No announcements yet.</p>;
   }
 
   return (
     <div>
-      {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
-      <div className="overflow-x-auto rounded-2xl border border-muted-faint/30 bg-white">
+      {error && <p className="text-sm text-red-600 dark:text-red-400 mb-3">{error}</p>}
+      <div className="overflow-x-auto rounded-2xl border border-muted-faint/30 dark:border-slate-700 bg-white dark:bg-slate-800">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-muted-faint/30 text-left text-xs uppercase tracking-wide text-muted">
+            <tr className="border-b border-muted-faint/30 dark:border-slate-700 text-left text-xs uppercase tracking-wide text-muted dark:text-slate-400">
               <th className="px-4 py-3 font-semibold">Type</th>
               <th className="px-4 py-3 font-semibold">Title</th>
               <th className="px-4 py-3 font-semibold">Status</th>
@@ -59,35 +59,40 @@ export function AnnouncementTable({
           </thead>
           <tbody>
             {items.map((a) => (
-              <tr key={a.id} className="border-b border-muted-faint/20 last:border-0">
+              <tr key={a.id} className="border-b border-muted-faint/20 dark:border-slate-700/60 last:border-0">
                 <td className="px-4 py-3">
                   <span className={cn("inline-flex rounded-md px-2 py-0.5 text-xs font-semibold", TYPE_BADGE[a.type])}>
                     {a.type}
                     {a.severity ? ` · ${a.severity}` : ""}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-ink font-medium">{a.title}</td>
+                <td className="px-4 py-3 text-ink dark:text-slate-100 font-medium">{a.title}</td>
                 <td className="px-4 py-3">
                   <span
                     className={cn(
                       "inline-flex rounded-md px-2 py-0.5 text-xs font-semibold",
-                      a.isActive ? "bg-emerald-100 text-emerald-700" : "bg-muted-faint/30 text-muted"
+                      a.isActive
+                        ? "bg-emerald-100 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400"
+                        : "bg-muted-faint/30 dark:bg-slate-700 text-muted dark:text-slate-400"
                     )}
                   >
                     {a.isActive ? "Active" : "Inactive"}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-muted tabular-nums">{a.priority}</td>
-                <td className="px-4 py-3 text-muted">{new Date(a.updatedAt).toLocaleDateString()}</td>
+                <td className="px-4 py-3 text-muted dark:text-slate-400 tabular-nums">{a.priority}</td>
+                <td className="px-4 py-3 text-muted dark:text-slate-400">{new Date(a.updatedAt).toLocaleDateString()}</td>
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-end gap-3">
-                    <Link href={`/admin/announcements/${a.id}/edit`} className="text-muted hover:text-teal transition-colors">
+                    <Link
+                      href={`/admin/announcements/${a.id}/edit`}
+                      className="text-muted dark:text-slate-400 hover:text-teal dark:hover:text-teal-light transition-colors"
+                    >
                       <Pencil size={16} />
                     </Link>
                     <button
                       onClick={() => handleDelete(a.id, a.title)}
                       disabled={deletingId === a.id}
-                      className="text-muted hover:text-red-600 transition-colors disabled:opacity-40"
+                      className="text-muted dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors disabled:opacity-40"
                     >
                       <Trash2 size={16} />
                     </button>

@@ -2,6 +2,12 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
+  // Class-based, not 'media' (the default) — only /admin ever toggles a
+  // `dark` class (on its own layout wrapper, see AdminThemeContext), so the
+  // marketing site — which never uses a `dark:` utility — is unaffected
+  // either way. Scoped in practice to /admin even though the setting itself
+  // is necessarily global to the Tailwind config.
+  darkMode: "class",
   theme: {
     extend: {
       colors: {

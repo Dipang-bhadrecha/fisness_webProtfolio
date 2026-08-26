@@ -9,7 +9,7 @@ export default function NewAnnouncementPage() {
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-bold text-ink mb-6">New announcement</h1>
+      <h1 className="font-display text-2xl font-bold text-ink dark:text-slate-100 mb-6">New announcement</h1>
       <AnnouncementForm token={token} />
     </div>
   );

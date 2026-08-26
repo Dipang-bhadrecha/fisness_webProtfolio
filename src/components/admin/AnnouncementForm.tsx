@@ -16,7 +16,7 @@ const TYPES: AnnouncementType[] = ["WELCOME", "UPDATE", "NEWS"];
 const SEVERITIES: AnnouncementSeverity[] = ["SOFT", "HARD"];
 
 const inputClass =
-  "w-full rounded-xl border border-muted-faint/50 px-3.5 py-2.5 text-sm text-ink focus:outline-none focus:border-teal";
+  "w-full rounded-xl border border-muted-faint/50 dark:border-slate-700 bg-transparent px-3.5 py-2.5 text-sm text-ink dark:text-slate-100 focus:outline-none focus:border-teal";
 
 function toDatetimeLocal(iso: string | null | undefined): string {
   return iso ? iso.slice(0, 16) : "";
@@ -168,15 +168,15 @@ export function AnnouncementForm({ token, existing }: { token: string; existing?
 
         <label className="flex items-center gap-2 text-sm text-ink">
           <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
-          Active
+          <span className="text-ink dark:text-slate-200">Active</span>
         </label>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
         <button
           type="submit"
           disabled={saving}
-          className="rounded-xl bg-ink px-6 py-3 font-semibold text-cream transition-colors hover:bg-teal disabled:opacity-50"
+          className="rounded-xl bg-ink dark:bg-teal-light px-6 py-3 font-semibold text-cream dark:text-slate-900 transition-colors hover:bg-teal dark:hover:bg-teal disabled:opacity-50"
         >
           {saving ? "Saving…" : existing ? "Save changes" : "Create announcement"}
         </button>
@@ -192,7 +192,7 @@ export function AnnouncementForm({ token, existing }: { token: string; existing?
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs font-semibold text-muted">{label}</span>
+      <span className="mb-1.5 block text-xs font-semibold text-muted dark:text-slate-400">{label}</span>
       {children}
     </label>
   );

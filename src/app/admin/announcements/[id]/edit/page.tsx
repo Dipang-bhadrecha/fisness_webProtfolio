@@ -21,13 +21,13 @@ export default function EditAnnouncementPage() {
     });
   }, [token, params.id]);
 
-  if (item === undefined) return <p className="text-sm text-muted">Loading…</p>;
-  if (item === null) return <p className="text-sm text-red-600">Announcement not found.</p>;
+  if (item === undefined) return <p className="text-sm text-muted dark:text-slate-400">Loading…</p>;
+  if (item === null) return <p className="text-sm text-red-600 dark:text-red-400">Announcement not found.</p>;
   if (!token) return null;
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-bold text-ink mb-6">Edit announcement</h1>
+      <h1 className="font-display text-2xl font-bold text-ink dark:text-slate-100 mb-6">Edit announcement</h1>
       <AnnouncementForm token={token} existing={item} />
     </div>
   );

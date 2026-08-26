@@ -21,7 +21,7 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, options: RequestInit & { token?: string } = {}): Promise<T> {
+async function rawRequest(path: string, options: RequestInit & { token?: string } = {}): Promise<any> {
   const { token, ...fetchOptions } = options;
 
   const headers: Record<string, string> = {
@@ -56,28 +56,75 @@ async function request<T>(path: string, options: RequestInit & { token?: string 
     );
   }
 
+  return body;
+}
+
+async function request<T>(path: string, options: RequestInit & { token?: string } = {}): Promise<T> {
+  const body = await rawRequest(path, options);
   return (body?.data !== undefined ? body.data : body) as T;
 }
 
+// For the backend's `paginatedResponse` envelope ({ success, data, pagination,
+// timestamp }) — request<T>() unwraps straight to `.data` and would silently
+// drop `.pagination`, which the admin/users and admin/audit-log tables need.
+export interface Paginated<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasMore: boolean;
+}
+
+async function requestPaginated<T>(
+  path: string,
+  options: RequestInit & { token?: string } = {}
+): Promise<Paginated<T>> {
+  const body = await rawRequest(path, options);
+  return { data: body.data, ...body.pagination } as Paginated<T>;
+}
+
 // ─── Auth ───────────────────────────────────────────────────────────────────
+//
+// Username + password + TOTP — fully independent of the mobile app's
+// phone+OTP (that flow lives in fisness/services/api.ts, not here). Mirrors
+// the three-stage flow the backend implements (adminAuth.routes.ts):
+//   1. login()         -> either a setupToken (first-time) or a pendingToken
+//   2a. setupStart() + setupConfirm()   (first-time: scan QR, enter a code)
+//   2b. totpVerify()                     (returning: already-enabled, one code)
+// Both 2a and 2b end with a real session token, used as `token` everywhere
+// else in this file's admin.* functions.
 
-export function requestOtp(phone: string): Promise<{ message: string }> {
-  return request("/api/v1/auth/request-otp", { method: "POST", body: JSON.stringify({ phone }) });
+export interface AdminSession {
+  username: string;
 }
 
-export function verifyOtp(phone: string, code: string): Promise<{ token: string }> {
-  return request("/api/v1/auth/verify-otp", { method: "POST", body: JSON.stringify({ phone, code }) });
+export type LoginResult =
+  | { setupRequired: true; setupToken: string }
+  | { totpRequired: true; pendingToken: string };
+
+export function adminLogin(username: string, password: string): Promise<LoginResult> {
+  return request("/api/v1/admin/auth/login", { method: "POST", body: JSON.stringify({ username, password }) });
 }
 
-export interface AdminUser {
-  id: string;
-  phone: string;
-  name: string | null;
-  isAdmin: boolean;
+export function adminSetupStart(setupToken: string): Promise<{ qrDataUrl: string; manualEntryKey: string }> {
+  return request("/api/v1/admin/auth/setup/start", { method: "POST", token: setupToken });
 }
 
-export function getMe(token: string): Promise<AdminUser> {
-  return request("/api/v1/auth/me", { token });
+export function adminSetupConfirm(setupToken: string, code: string): Promise<{ token: string }> {
+  return request("/api/v1/admin/auth/setup/confirm", {
+    method: "POST", token: setupToken, body: JSON.stringify({ code }),
+  });
+}
+
+export function adminTotpVerify(pendingToken: string, code: string): Promise<{ token: string }> {
+  return request("/api/v1/admin/auth/totp/verify", {
+    method: "POST", token: pendingToken, body: JSON.stringify({ code }),
+  });
+}
+
+export function adminMe(token: string): Promise<AdminSession> {
+  return request("/api/v1/admin/auth/me", { token });
 }
 
 // ─── Announcements ──────────────────────────────────────────────────────────
@@ -125,4 +172,136 @@ export function updateAnnouncement(
 
 export function deleteAnnouncement(token: string, id: string): Promise<void> {
   return request(`/api/v1/announcements/${id}`, { method: "DELETE", token });
+}
+
+// ─── Platform overview ───────────────────────────────────────────────────────
+
+export interface AdminOverview {
+  users: number;
+  boats: number;
+  companies: number;
+  sessions: number;
+}
+
+export function getOverview(token: string): Promise<AdminOverview> {
+  return request("/api/v1/admin/overview", { token });
+}
+
+// ─── Users ──────────────────────────────────────────────────────────────────
+
+// A row in the platform user table — distinct from `AdminSession` above,
+// which is specifically "the logged-in founder's own identity" used by
+// AdminAuthContext. Conflating the two would blur "who am I" with "a row in
+// the users table". Also distinct from `AdminCredential` (the backend's
+// login-table row) — this is a `User` (a phone/OTP mobile-app account), not
+// an admin login.
+export interface PlatformUser {
+  id: string;
+  phone: string;
+  name: string | null;
+  ownerType: string | null;
+  isActive: boolean;
+  isAdmin: boolean;
+  createdAt: string;
+}
+
+export function listUsers(
+  token: string,
+  params: { search?: string; page?: number; limit?: number } = {}
+): Promise<Paginated<PlatformUser>> {
+  const qs = new URLSearchParams();
+  if (params.search) qs.set("search", params.search);
+  if (params.page) qs.set("page", String(params.page));
+  if (params.limit) qs.set("limit", String(params.limit));
+  const suffix = qs.toString() ? `?${qs.toString()}` : "";
+  return requestPaginated(`/api/v1/admin/users${suffix}`, { token });
+}
+
+export function setUserActive(token: string, id: string, isActive: boolean): Promise<PlatformUser> {
+  return request(`/api/v1/admin/users/${id}`, {
+    method: "PATCH",
+    token,
+    body: JSON.stringify({ isActive }),
+  });
+}
+
+// ─── Boats & companies ──────────────────────────────────────────────────────
+//
+// Names and metadata only — nothing from the encrypted money tables (see
+// ../../../CLAUDE.md → "What is encrypted vs what stays visible" in the
+// fisness monorepo). The backend queries never select those fields, so
+// there is nothing for this dashboard to leak even by accident.
+
+export interface PlatformBoat {
+  id: string;
+  name: string;
+  ownerName: string | null;
+  registrationNumber: string | null;
+  portLocation: string | null;
+  isActive: boolean;
+  createdAt: string;
+  owner: { name: string | null; phone: string } | null;
+  _count: { sessions: number };
+}
+
+export function listBoats(
+  token: string,
+  params: { search?: string; page?: number; limit?: number } = {}
+): Promise<Paginated<PlatformBoat>> {
+  const qs = new URLSearchParams();
+  if (params.search) qs.set("search", params.search);
+  if (params.page) qs.set("page", String(params.page));
+  if (params.limit) qs.set("limit", String(params.limit));
+  const suffix = qs.toString() ? `?${qs.toString()}` : "";
+  return requestPaginated(`/api/v1/admin/boats${suffix}`, { token });
+}
+
+export interface PlatformCompany {
+  id: string;
+  name: string;
+  nameGujarati: string | null;
+  phone: string | null;
+  isActive: boolean;
+  createdAt: string;
+  owner: { name: string | null; phone: string } | null;
+  _count: { registeredBoats: number; sessions: number };
+}
+
+export function listCompanies(
+  token: string,
+  params: { search?: string; page?: number; limit?: number } = {}
+): Promise<Paginated<PlatformCompany>> {
+  const qs = new URLSearchParams();
+  if (params.search) qs.set("search", params.search);
+  if (params.page) qs.set("page", String(params.page));
+  if (params.limit) qs.set("limit", String(params.limit));
+  const suffix = qs.toString() ? `?${qs.toString()}` : "";
+  return requestPaginated(`/api/v1/admin/companies${suffix}`, { token });
+}
+
+// ─── Audit log ──────────────────────────────────────────────────────────────
+
+export interface PlatformAuditLogEntry {
+  id: string;
+  userId: string;
+  method: string;
+  path: string;
+  resource: string;
+  resourceId: string | null;
+  statusCode: number;
+  createdAt: string;
+  user: { name: string | null; phone: string } | null;
+}
+
+export function listAuditLog(
+  token: string,
+  params: { page?: number; limit?: number; userId?: string; resource?: string } = {}
+): Promise<Paginated<PlatformAuditLogEntry>> {
+  const qs = new URLSearchParams();
+  if (params.page) qs.set("page", String(params.page));
+  if (params.limit) qs.set("limit", String(params.limit));
+  if (params.userId) qs.set("userId", params.userId);
+  if (params.resource) qs.set("resource", params.resource);
+  const suffix = qs.toString() ? `?${qs.toString()}` : "";
+  return requestPaginated(`/api/v1/admin/audit-log${suffix}`, { token });
 }
