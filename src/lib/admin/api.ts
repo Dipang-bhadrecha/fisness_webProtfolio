@@ -317,15 +317,30 @@ export interface PlatformAuditLogEntry {
   user: { name: string | null; phone: string } | null;
 }
 
+// Every `resource` string any route's audit config actually uses
+// (fisness_backend/src/routes/*.ts) — a fixed, known set since it's assigned
+// per-route in code, not free-form per-row, so a dropdown can enumerate it
+// instead of needing to ask the backend "what values exist".
+export const AUDIT_RESOURCES = [
+  "Bill", "BillSettlement", "BoatAdvance", "BoatBuyerAgreement", "BoatExpense",
+  "BoatIncome", "BusinessInsights", "CompanyCrewMember", "CompanyExpense",
+  "CompanyIncome", "CrewAdvance", "CrewMember", "CrewMemberProof", "Javak",
+  "PartyLedger", "SeasonSummary", "Session", "TripPnL",
+] as const;
+
+export const AUDIT_METHODS = ["GET", "POST", "PATCH", "DELETE"] as const;
+
 export function listAuditLog(
   token: string,
-  params: { page?: number; limit?: number; userId?: string; resource?: string } = {}
+  params: { page?: number; limit?: number; userId?: string; resource?: string; method?: string; phone?: string } = {}
 ): Promise<Paginated<PlatformAuditLogEntry>> {
   const qs = new URLSearchParams();
   if (params.page) qs.set("page", String(params.page));
   if (params.limit) qs.set("limit", String(params.limit));
   if (params.userId) qs.set("userId", params.userId);
   if (params.resource) qs.set("resource", params.resource);
+  if (params.method) qs.set("method", params.method);
+  if (params.phone) qs.set("phone", params.phone);
   const suffix = qs.toString() ? `?${qs.toString()}` : "";
   return requestPaginated(`/api/v1/admin/audit-log${suffix}`, { token });
 }
