@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Anchor, Building2, LogOut, Megaphone, Moon, ScrollText, Sun, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { AdminSession } from "@/lib/admin/api";
+import { useAdminEnvironment } from "@/lib/admin/AdminEnvironmentContext";
 import { useAdminTheme } from "@/lib/admin/AdminThemeContext";
 
 // One entry per section — new ones are just another object here, not a
@@ -20,11 +21,24 @@ const NAV_ITEMS = [
 export function AdminSidebar({ user, onLogout }: { user: AdminSession | null; onLogout: () => void }) {
   const pathname = usePathname();
   const { theme, toggle } = useAdminTheme();
+  const { env } = useAdminEnvironment();
 
   return (
     <aside className="w-64 shrink-0 border-r border-muted-faint/30 dark:border-slate-800 bg-cream dark:bg-slate-900 flex flex-col">
       <div className="px-6 py-6">
-        <p className="font-display text-lg font-bold text-ink dark:text-slate-100">Fisness Admin</p>
+        <div className="flex items-center gap-2">
+          <p className="font-display text-lg font-bold text-ink dark:text-slate-100">Fisness Admin</p>
+          <span
+            className={cn(
+              "rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide",
+              env === "live"
+                ? "bg-red-600 text-white"
+                : "bg-teal/10 dark:bg-teal/20 text-teal dark:text-teal-light"
+            )}
+          >
+            {env}
+          </span>
+        </div>
         {user?.username && <p className="text-xs text-muted dark:text-slate-400 mt-0.5">{user.username}</p>}
       </div>
 

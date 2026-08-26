@@ -16,12 +16,19 @@
  * "valid login, wrong role" case anymore, unlike the old phone-OTP-derived
  * flow — every successful login through that pipeline already IS an admin,
  * so `status` has no `forbidden` state.
+ *
+ * Keyed off AdminEnvironmentContext's `env`: stage and live are two separate
+ * fisness_backend deployments with two separate ADMIN_JWT_SECRETs, so a
+ * token from one is meaningless to the other. Flipping the Stage/Live switch
+ * re-runs the token check below against whichever token (if any) is stored
+ * for that environment — it does not carry the current session over.
  */
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { AdminSession, adminMe } from "./api";
+import { useAdminEnvironment } from "./AdminEnvironmentContext";
 
-const TOKEN_KEY = "fisness_admin_token";
+const tokenKeyFor = (env: string) => `fisness_admin_token_${env}`;
 
 type Status = "loading" | "authed" | "unauthed";
 
@@ -36,44 +43,58 @@ interface AdminAuthState {
 const AdminAuthContext = createContext<AdminAuthState | null>(null);
 
 export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
+  const { env } = useAdminEnvironment();
   const [status, setStatus] = useState<Status>("loading");
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<AdminSession | null>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem(TOKEN_KEY);
+    let cancelled = false;
+    setStatus("loading");
+
+    const stored = localStorage.getItem(tokenKeyFor(env));
     if (!stored) {
+      setToken(null);
+      setUser(null);
       setStatus("unauthed");
       return;
     }
     adminMe(stored)
       .then((me) => {
+        if (cancelled) return;
         setToken(stored);
         setUser(me);
         setStatus("authed");
       })
       .catch(() => {
-        localStorage.removeItem(TOKEN_KEY);
+        if (cancelled) return;
+        localStorage.removeItem(tokenKeyFor(env));
+        setToken(null);
+        setUser(null);
         setStatus("unauthed");
       });
-  }, []);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [env]);
 
   // The login form does the multi-step dance itself (password, then TOTP)
   // and only hands this context a token once the backend has already
   // returned a real `scope: 'admin-session'` session — this just persists it.
   const loginWithToken = useCallback((newToken: string, newUser: AdminSession) => {
-    localStorage.setItem(TOKEN_KEY, newToken);
+    localStorage.setItem(tokenKeyFor(env), newToken);
     setToken(newToken);
     setUser(newUser);
     setStatus("authed");
-  }, []);
+  }, [env]);
 
   const logout = useCallback(() => {
-    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(tokenKeyFor(env));
     setToken(null);
     setUser(null);
     setStatus("unauthed");
-  }, []);
+  }, [env]);
 
   return (
     <AdminAuthContext.Provider value={{ status, token, user, loginWithToken, logout }}>

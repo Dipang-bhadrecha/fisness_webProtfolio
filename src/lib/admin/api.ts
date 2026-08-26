@@ -7,7 +7,29 @@
  * not a different shape to remember.
  */
 
-const BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "https://api.fisness.com").replace(/\/$/, "");
+// One RDS instance, two separate fisness_backend deployments (stage-api /
+// api) each with their own ADMIN_JWT_SECRET, so a "stage" login token is
+// never valid against "live" and vice versa — see AdminEnvironmentContext,
+// which is what actually flips `activeEnv` when the founder switches.
+export type AdminEnv = "stage" | "live";
+
+const API_URLS: Record<AdminEnv, string> = {
+  stage: (process.env.NEXT_PUBLIC_API_URL_STAGE ?? process.env.NEXT_PUBLIC_API_URL ?? "https://stage-api.fisness.com").replace(/\/$/, ""),
+  live: (process.env.NEXT_PUBLIC_API_URL_LIVE ?? "https://api.fisness.com").replace(/\/$/, ""),
+};
+
+let activeEnv: AdminEnv = "stage";
+
+// Called by AdminEnvironmentContext, synchronously, before any request that
+// depends on the new environment can fire — never called from a component
+// render.
+export function setActiveAdminEnv(env: AdminEnv) {
+  activeEnv = env;
+}
+
+export function getActiveAdminEnv(): AdminEnv {
+  return activeEnv;
+}
 
 export class ApiError extends Error {
   constructor(
@@ -30,12 +52,14 @@ async function rawRequest(path: string, options: RequestInit & { token?: string 
   };
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
+  const baseUrl = API_URLS[activeEnv];
+
   let response: Response;
   try {
-    response = await fetch(`${BASE_URL}${path}`, { ...fetchOptions, headers });
+    response = await fetch(`${baseUrl}${path}`, { ...fetchOptions, headers });
   } catch (err) {
     if (process.env.NODE_ENV !== "production") {
-      console.warn(`[admin api] unreachable: ${fetchOptions.method ?? "GET"} ${BASE_URL}${path}`, err);
+      console.warn(`[admin api] unreachable: ${fetchOptions.method ?? "GET"} ${baseUrl}${path}`, err);
     }
     throw new ApiError("Network request failed", 0, "NETWORK_ERROR");
   }
