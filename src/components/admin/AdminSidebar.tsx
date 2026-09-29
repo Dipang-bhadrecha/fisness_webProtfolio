@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Anchor, Building2, LogOut, Megaphone, Moon, ScrollText, Sun, Users } from "lucide-react";
+import { Anchor, Building2, LogOut, Megaphone, Moon, ScrollText, Sun, UserCog, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { AdminSession } from "@/lib/admin/api";
 import { useAdminEnvironment } from "@/lib/admin/AdminEnvironmentContext";
@@ -15,6 +15,7 @@ const NAV_ITEMS = [
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/boats", label: "Boats", icon: Anchor },
   { href: "/admin/companies", label: "Companies", icon: Building2 },
+  { href: "/admin/managers", label: "Manager Access", icon: UserCog },
   { href: "/admin/audit-log", label: "Audit Log", icon: ScrollText },
 ];
 

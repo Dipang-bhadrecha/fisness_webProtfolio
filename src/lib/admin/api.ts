@@ -205,6 +205,7 @@ export interface AdminOverview {
   boats: number;
   companies: number;
   sessions: number;
+  managers: number;
 }
 
 export function getOverview(token: string): Promise<AdminOverview> {
@@ -301,6 +302,40 @@ export function listCompanies(
   if (params.limit) qs.set("limit", String(params.limit));
   const suffix = qs.toString() ? `?${qs.toString()}` : "";
   return requestPaginated(`/api/v1/admin/companies${suffix}`, { token });
+}
+
+// ─── Manager access ─────────────────────────────────────────────────────────
+
+export type GrantStatus = "PENDING_CLAIM" | "ACTIVE" | "REVOKED";
+export const GRANT_STATUSES: GrantStatus[] = ["ACTIVE", "PENDING_CLAIM", "REVOKED"];
+
+export interface PlatformManagerGrant {
+  id: string;
+  managerPhone: string;
+  managerName: string | null;
+  status: GrantStatus;
+  appliesToBoat: boolean;
+  appliesToCompany: boolean;
+  // Names of the companies the grant reaches; empty = every company the owner has.
+  companies: string[];
+  claimedAt: string | null;
+  createdAt: string;
+  owner: { name: string | null; phone: string } | null;
+  manager: { name: string | null } | null;
+  _count: { permissions: number };
+}
+
+export function listManagerGrants(
+  token: string,
+  params: { search?: string; status?: string; page?: number; limit?: number } = {}
+): Promise<Paginated<PlatformManagerGrant>> {
+  const qs = new URLSearchParams();
+  if (params.search) qs.set("search", params.search);
+  if (params.status) qs.set("status", params.status);
+  if (params.page) qs.set("page", String(params.page));
+  if (params.limit) qs.set("limit", String(params.limit));
+  const suffix = qs.toString() ? `?${qs.toString()}` : "";
+  return requestPaginated(`/api/v1/admin/managers${suffix}`, { token });
 }
 
 // ─── Audit log ──────────────────────────────────────────────────────────────

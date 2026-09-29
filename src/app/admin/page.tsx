@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Megaphone, ScrollText, Users } from "lucide-react";
+import { Megaphone, ScrollText, UserCog, Users } from "lucide-react";
 import { useAdminAuth } from "@/lib/admin/AdminAuthContext";
 import { AdminOverview, getOverview } from "@/lib/admin/api";
 
 const SECTIONS = [
   { href: "/admin/announcements", label: "Announcements", sub: "Welcome, update and news banners", icon: Megaphone },
   { href: "/admin/users", label: "Users", sub: "Search accounts, activate or deactivate", icon: Users },
+  { href: "/admin/managers", label: "Manager Access", sub: "Which number manages for which owner", icon: UserCog },
   { href: "/admin/audit-log", label: "Audit Log", sub: "Every write across the platform", icon: ScrollText },
 ];
 
@@ -17,6 +18,7 @@ const STATS: { key: keyof AdminOverview; label: string }[] = [
   { key: "boats", label: "Boats" },
   { key: "companies", label: "Companies" },
   { key: "sessions", label: "Talis" },
+  { key: "managers", label: "Manager Access" },
 ];
 
 export default function AdminHomePage() {
@@ -37,12 +39,12 @@ export default function AdminHomePage() {
 
       {error && <p className="mb-4 text-sm text-red-600 dark:text-red-400">{error}</p>}
 
-      <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {STATS.map((stat) => (
           <div key={stat.key} className="rounded-2xl border border-muted-faint/30 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
             <p className="text-xs font-semibold uppercase tracking-wide text-muted dark:text-slate-400">{stat.label}</p>
             <p className="mt-2 font-display text-3xl font-bold text-ink dark:text-slate-100 tabular-nums">
-              {overview ? overview[stat.key].toLocaleString() : "—"}
+              {overview?.[stat.key]?.toLocaleString() ?? "—"}
             </p>
           </div>
         ))}
