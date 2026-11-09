@@ -3,6 +3,8 @@ import type { LucideIcon } from "lucide-react";
 export type NavLink = {
   label: string;
   href: string;
+  /** Small pill after the label in the header, e.g. "New". */
+  badge?: string;
 };
 
 export type FeatureTint = {

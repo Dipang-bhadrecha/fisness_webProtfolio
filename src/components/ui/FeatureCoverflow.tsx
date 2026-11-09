@@ -111,7 +111,8 @@ function PhoneScreen({ feature, isActive }: { feature: Feature; isActive: boolea
 }
 
 export function FeatureCoverflow() {
-  const [active, setActive] = useState(0);
+  // Open on the middle card so the fan has phones on both sides.
+  const [active, setActive] = useState(Math.floor(COUNT / 2));
 
   const goTo = useCallback((index: number) => {
     setActive(Math.min(COUNT - 1, Math.max(0, index)));

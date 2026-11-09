@@ -51,6 +51,23 @@ body {
   color: transparent;
 }
 
+/* Light sweep across text — pair with `animate-shimmer`. */
+.text-shimmer {
+  background: linear-gradient(
+    100deg,
+    #17211f 35%,
+    #12a3ad 48%,
+    #7ff3ea 50%,
+    #12a3ad 52%,
+    #17211f 65%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
 .no-scrollbar {
   scrollbar-width: none;
   -ms-overflow-style: none;
