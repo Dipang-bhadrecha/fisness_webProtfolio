@@ -9,6 +9,14 @@ import { navLinks } from "@/data/nav";
 
 import { InstagramIcon } from "./InstagramIcon";
 
+function NavBadge({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="font-mono text-[10.5px] font-medium uppercase tracking-wide leading-none text-teal bg-teal/[0.1] rounded-full px-2 py-1">
+      {children}
+    </span>
+  );
+}
+
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -22,9 +30,10 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-ink text-lg font-semibold no-underline hover:text-teal transition-colors"
+              className="inline-flex items-center gap-2 text-ink text-lg font-semibold no-underline hover:text-teal transition-colors"
             >
               {link.label}
+              {link.badge ? <NavBadge>{link.badge}</NavBadge> : null}
             </Link>
           ))}
           <a
@@ -63,9 +72,10 @@ export function Header() {
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className="text-ink font-semibold no-underline py-3 px-1 text-lg hover:text-teal transition-colors"
+              className="inline-flex items-center gap-2 text-ink font-semibold no-underline py-3 px-1 text-lg hover:text-teal transition-colors"
             >
               {link.label}
+              {link.badge ? <NavBadge>{link.badge}</NavBadge> : null}
             </Link>
           ))}
           <Link
