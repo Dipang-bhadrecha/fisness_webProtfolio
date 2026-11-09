@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -24,40 +25,18 @@ export const metadata: Metadata = {
     "FishToken prints numbered token slips for every member at your fish-cutting plant, works offline, and settles every payout to the paisa. Android app for supervisors, Windows app for the office.",
 };
 
-/** Illustrative printed slip for the hero — not real data. */
+/** Printed token slip shown in the hero. */
 function TokenSlip() {
   return (
-    <div className="relative w-[280px] sm:w-[300px] mx-auto animate-softFloat">
-      <div className="rounded-2xl bg-white border border-ink/10 shadow-[0_30px_60px_-25px_rgba(15,125,132,0.45)] px-6 pt-6 pb-5 font-mono text-[13px] text-ink">
-        <div className="text-center border-b border-dashed border-ink/20 pb-3 mb-3">
-          <p className="font-display font-bold text-base tracking-tight">
-            Sagar Fish Plant
-          </p>
-          <p className="text-[11px] text-muted-light">S1-261019-0042</p>
-        </div>
-        <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5">
-          <dt className="text-muted-light">Member</dt>
-          <dd className="text-right">127 · Ramesh</dd>
-          <dt className="text-muted-light">Fish</dt>
-          <dd className="text-right">પાપલેટ</dd>
-          <dt className="text-muted-light">Besan</dt>
-          <dd className="text-right">12 × 1.5</dd>
-          <dt className="text-muted-light">Tokens</dt>
-          <dd className="text-right font-semibold">18</dd>
-        </dl>
-        <div className="flex items-baseline justify-between border-t border-dashed border-ink/20 mt-3 pt-3">
-          <span className="text-muted-light">Amount</span>
-          <span className="font-display font-bold text-2xl text-teal">
-            ₹900
-          </span>
-        </div>
-        <p className="text-center text-[10.5px] text-muted-faint mt-3">
-          19 Oct 2026 · 07:42 · Supervisor S1
-        </p>
-      </div>
-      {/* tear-off notches */}
-      <span className="absolute left-[-9px] top-[86px] w-[18px] h-[18px] rounded-full bg-[#eef7f7]" />
-      <span className="absolute right-[-9px] top-[86px] w-[18px] h-[18px] rounded-full bg-[#eef7f7]" />
+    <div className="relative w-full max-w-[340px] sm:max-w-[400px] md:max-w-[440px] mx-auto md:mr-0 animate-softFloat">
+      <Image
+        src="/assets/fishtoken/token-slip.png"
+        alt="A printed FishToken slip in Gujarati showing member number, fish type and a token count of 1.5"
+        width={402}
+        height={650}
+        priority
+        className="w-full h-auto drop-shadow-[0_30px_40px_rgba(15,125,132,0.28)]"
+      />
     </div>
   );
 }
@@ -148,7 +127,9 @@ export default function FishTokenPage() {
                 Download FishToken
               </Button>
               <Link
-                href={fishTokenLinks.support}
+                href={fishTokenLinks.licenceWhatsApp}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 font-semibold text-ink no-underline px-4 py-4 hover:text-teal transition-colors"
               >
                 Get a licence key
@@ -273,12 +254,22 @@ export default function FishTokenPage() {
             Write to us for a licence key — we&apos;ll help you set up your
             members, fish list and printer.
           </p>
-          <a
-            href={fishTokenLinks.support}
-            className="font-semibold text-teal no-underline hover:underline"
-          >
-            support@fisness.com
-          </a>
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
+            <a
+              href={fishTokenLinks.licenceWhatsApp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-teal no-underline hover:underline"
+            >
+              Chat on WhatsApp
+            </a>
+            <a
+              href={fishTokenLinks.support}
+              className="font-semibold text-teal no-underline hover:underline"
+            >
+              support@fisness.com
+            </a>
+          </div>
         </div>
         <div className="rounded-2xl border border-ink/[0.08] p-7">
           <ShieldCheck size={24} className="text-teal mb-4" />

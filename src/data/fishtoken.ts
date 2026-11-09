@@ -11,6 +11,15 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+/** WhatsApp number (with country code, digits only) that licence enquiries go to. */
+const licenceWhatsAppNumber = "917619108524";
+
+/** Pre-filled so the visitor only has to tap Send. */
+const licenceWhatsAppMessage = [
+  "Hi Fisness, I want to know more about FishToken and get a licence key for my fish-cutting plant.",
+  "નમસ્તે, મારે મારા ફિશ કટિંગ પ્લાન્ટ માટે FishToken ની લાઇસન્સ કી વિશે જાણવું છે.",
+].join("\n\n");
+
 /** Everything the /fishtoken pages link to — change a download here, not in the JSX. */
 export const fishTokenLinks = {
   playStore:
@@ -25,6 +34,8 @@ export const fishTokenLinks = {
   androidVersion: "1.1.0",
   privacyPolicy: "/fishtoken/privacy-policy",
   support: "mailto:support@fisness.com?subject=FishToken%20licence",
+  /** Opens WhatsApp (the app on phones) with the enquiry already typed. */
+  licenceWhatsApp: `https://wa.me/${licenceWhatsAppNumber}?text=${encodeURIComponent(licenceWhatsAppMessage)}`,
 };
 
 export type FishTokenStep = {

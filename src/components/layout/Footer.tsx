@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Logo } from "@/components/ui/Logo";
 import { footerLinks } from "@/data/nav";
+import { company } from "@/data/products";
 
 export function Footer() {
   return (
@@ -10,8 +11,7 @@ export function Footer() {
         <div className="col-span-2 md:col-span-1">
           <Logo className="mb-3.5" />
           <p className="text-sm text-muted-light leading-[1.55] max-w-[280px] mb-4">
-            The digital logbook for fishing boat businesses. Boats, crew,
-            trips, tali and ledgers — offline-first.
+            {company.about} Makers of FishToken and the Fisness App.
           </p>
           <span className="font-mono text-xs text-muted-faint">
             support@fisness.com
@@ -20,7 +20,7 @@ export function Footer() {
 
         <div>
           <p className="font-mono text-[11px] text-muted-faint tracking-wider mb-3.5">
-            PRODUCT
+            PRODUCTS
           </p>
           <div className="flex flex-col gap-2.5">
             {footerLinks.product.map((link) => (

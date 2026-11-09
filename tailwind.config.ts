@@ -70,6 +70,18 @@ const config: Config = {
           from: { opacity: "0", transform: "translateY(30px)" },
           to: { opacity: "1", transform: "none" },
         },
+        shimmer: {
+          "0%": { backgroundPosition: "150% 0" },
+          "100%": { backgroundPosition: "-50% 0" },
+        },
+        badgeGlow: {
+          "0%, 100%": {
+            boxShadow: "0 0 4px 0 rgba(18,163,173,0.55), 0 0 0 0 rgba(18,163,173,0.45)",
+          },
+          "50%": {
+            boxShadow: "0 0 14px 2px rgba(18,163,173,0.85), 0 0 0 6px rgba(18,163,173,0)",
+          },
+        },
       },
       animation: {
         softFloat: "softFloat 6s ease-in-out infinite",
@@ -81,6 +93,9 @@ const config: Config = {
         encPop: "encPop 0.4s ease both",
         encSpin: "encSpin 0.7s linear infinite",
         encSheetUp: "encSheetUp 0.35s ease both",
+        badgeGlow: "badgeGlow 1.8s ease-in-out infinite",
+        shimmer: "shimmer 2.8s linear infinite",
+        borderSpin: "spin 3.2s linear infinite",
       },
     },
   },

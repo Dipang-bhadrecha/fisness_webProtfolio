@@ -1,8 +1,8 @@
 import type { NavLink } from "@/types";
 
 export const navLinks: NavLink[] = [
-  { label: "Features", href: "/#features" },
   { label: "FishToken", href: "/fishtoken", badge: "New" },
+  { label: "Fisness App", href: "/#features" },
 ];
 
 export const heroRotatingWords = [
@@ -15,12 +15,13 @@ export const heroRotatingWords = [
 
 export const footerLinks = {
   product: [
-    { label: "Features", href: "/#features" },
+    { label: "FishToken", href: "/fishtoken" },
+    { label: "Download FishToken", href: "/fishtoken#download" },
+    { label: "Fisness App", href: "/#features" },
     {
-      label: "Download",
+      label: "Download Fisness App",
       href: "https://play.google.com/store/apps/details?id=com.fisness.app",
     },
-    { label: "FishToken", href: "/fishtoken" },
   ],
   company: [
     { label: "About", href: "#" },
