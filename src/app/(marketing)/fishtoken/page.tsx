@@ -13,6 +13,7 @@ import {
 
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { StepCoverflow } from "@/components/ui/StepCoverflow";
 import {
   fishTokenFeatures,
   fishTokenLinks,
@@ -149,29 +150,7 @@ export default function FishTokenPage() {
         <h2 className="font-display font-semibold text-[clamp(28px,3.6vw,40px)] tracking-[-0.02em] leading-[1.15] mb-10 max-w-[640px]">
           Three taps at the table. One ledger in the office.
         </h2>
-        <ol className="grid md:grid-cols-3 gap-5">
-          {fishTokenSteps.map((step, i) => (
-            <li
-              key={step.title}
-              className="rounded-2xl border border-ink/[0.08] p-6 bg-white"
-            >
-              <div className="flex items-center justify-between mb-5">
-                <span className="grid place-items-center w-11 h-11 rounded-xl bg-ink text-cream">
-                  <step.icon size={21} strokeWidth={2} />
-                </span>
-                <span className="font-mono text-sm text-muted-faint">
-                  0{i + 1}
-                </span>
-              </div>
-              <h3 className="font-display font-bold text-lg mb-2">
-                {step.title}
-              </h3>
-              <p className="text-[15px] text-muted leading-[1.6]">
-                {step.body}
-              </p>
-            </li>
-          ))}
-        </ol>
+        <StepCoverflow steps={fishTokenSteps} />
       </section>
 
       {/* Features */}
