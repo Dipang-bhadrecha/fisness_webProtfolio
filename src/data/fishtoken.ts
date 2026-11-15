@@ -1,11 +1,8 @@
 import {
   BarChart3,
-  CalendarCheck,
   FileSpreadsheet,
   IndianRupee,
   QrCode,
-  ScanLine,
-  Printer,
   Users,
   WifiOff,
   type LucideIcon,
@@ -39,26 +36,30 @@ export const fishTokenLinks = {
 };
 
 export type FishTokenStep = {
-  icon: LucideIcon;
   title: string;
-  body: string;
+  /** Background-removed PNG in public/assets/fishtoken/steps/. */
+  image: string;
+  alt: string;
+  /** Optional zoom for this image inside the carousel (1 = default size). */
+  scale?: number;
 };
 
 export const fishTokenSteps: FishTokenStep[] = [
   {
-    icon: ScanLine,
     title: "Scan the member's card",
-    body: "Every member gets a QR card. The supervisor scans it, or types the member code.",
+    image: "/assets/fishtoken/steps/01-removebg.png",
+    scale: 1.2,
+    alt: "A member's QR token card being scanned by the FishToken app on a phone",
   },
   {
-    icon: CalendarCheck,
     title: "Pick fish and count",
-    body: "Choose the fish and the besan / jali count. Tokens and the amount are worked out to the paisa.",
+    image: "/assets/fishtoken/steps/02-removebg.png",
+    alt: "FishToken app with the member selected, a fish chosen and a token count of 1.5",
   },
   {
-    icon: Printer,
     title: "Print the token",
-    body: "A numbered slip prints on a Bluetooth printer in seconds — in Gujarati, even with no internet.",
+    image: "/assets/fishtoken/steps/03-removebg.png",
+    alt: "A Bluetooth printer printing a numbered FishToken slip in Gujarati",
   },
 ];
 
