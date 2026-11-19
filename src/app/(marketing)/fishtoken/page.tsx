@@ -51,15 +51,18 @@ function DownloadCard({
   href,
   cta,
   external,
+  notes,
 }: {
   icon: typeof Smartphone;
   platform: string;
   title: string;
   audience: string;
-  version: string;
+  version?: string;
   href: string;
   cta: string;
   external?: boolean;
+  /** Small print shown under the button. */
+  notes?: string[];
 }) {
   return (
     <div className="flex flex-col rounded-2xl bg-white border border-ink/[0.08] p-6 text-left">
@@ -89,8 +92,17 @@ function DownloadCard({
         >
           {cta}
         </Button>
-        <span className="font-mono text-xs text-muted-faint">v{version}</span>
+        {version ? (
+          <span className="font-mono text-xs text-muted-faint">v{version}</span>
+        ) : null}
       </div>
+      {notes?.length ? (
+        <ul className="mt-4 space-y-1.5 text-[13px] text-muted leading-[1.5]">
+          {notes.map((note) => (
+            <li key={note}>{note}</li>
+          ))}
+        </ul>
+      ) : null}
     </div>
   );
 }
@@ -202,9 +214,13 @@ export default function FishTokenPage() {
                 platform="WINDOWS 10 / 11"
                 title="FishToken Manager"
                 audience="For the plant owner and office. Activate once with your licence key, then manage members, fish, reports, payments and backups."
-                version={fishTokenLinks.desktopVersion}
                 href={fishTokenLinks.desktopInstaller}
                 cta="Download for Windows"
+                notes={[
+                  "Windows 10 or later, 64-bit",
+                  "Install once. Updates download and install automatically when the app opens.",
+                  "On first install Windows may show 'Windows protected your PC'. Click 'More info', then 'Run anyway'.",
+                ]}
               />
               <DownloadCard
                 icon={Smartphone}

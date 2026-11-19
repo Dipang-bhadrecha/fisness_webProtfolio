@@ -22,12 +22,11 @@ export const fishTokenLinks = {
   playStore:
     "https://play.google.com/store/apps/details?id=com.fisness.fishcuttingtoken",
   /**
-   * Windows installer. The fishCut-desktop GitHub workflow builds
-   * FishToken-Manager-Setup-<version>.exe; drop that file in public/downloads/
-   * and bump the version here when a new one ships.
+   * Windows installer. A Cloudflare redirect to the newest GitHub release
+   * file, so it never needs a version bump here. Don't link GitHub directly.
+   * The app updates itself after the first install.
    */
-  desktopInstaller: "/downloads/FishToken-Manager-Setup-0.1.1.exe",
-  desktopVersion: "0.1.1",
+  desktopInstaller: "https://download.fisness.com",
   androidVersion: "1.1.0",
   privacyPolicy: "/fishtoken/privacy-policy",
   support: "mailto:support@fisness.com?subject=FishToken%20licence",
@@ -48,7 +47,6 @@ export const fishTokenSteps: FishTokenStep[] = [
   {
     title: "Scan the member's card",
     image: "/assets/fishtoken/steps/01-removebg.png",
-    scale: 1.2,
     alt: "A member's QR token card being scanned by the FishToken app on a phone",
   },
   {
