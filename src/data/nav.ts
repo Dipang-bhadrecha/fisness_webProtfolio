@@ -1,3 +1,4 @@
+import { fishTokenLinks } from "@/data/fishtoken";
 import type { NavLink } from "@/types";
 
 export const navLinks: NavLink[] = [
@@ -28,5 +29,28 @@ export const footerLinks = {
     { label: "Contact", href: "#" },
     { label: "Privacy Policy", href: "/privacy-policy" },
     { label: "FishToken Privacy", href: "/fishtoken/privacy-policy" },
+  ],
+};
+
+/** Footer on /fishtoken pages — FishToken only, no Fisness App links. */
+export const fishTokenFooter = {
+  about:
+    "Token slips for fish-cutting plants. Supervisors print tokens at the table; the office settles every payout on one desktop app.",
+  columns: [
+    {
+      title: "DOWNLOAD",
+      links: [
+        { label: "FishToken Manager for Windows", href: fishTokenLinks.desktopInstaller },
+        { label: "FishToken for Android", href: fishTokenLinks.playStore, newTab: true },
+      ],
+    },
+    {
+      title: "SUPPORT",
+      links: [
+        { label: "Get a licence key", href: fishTokenLinks.licenceWhatsApp, newTab: true },
+        { label: "Email support", href: fishTokenLinks.support },
+        { label: "Privacy Policy", href: fishTokenLinks.privacyPolicy },
+      ],
+    },
   ],
 };
